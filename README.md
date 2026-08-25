@@ -17,8 +17,10 @@ The project is in its definition and data-investigation phase. No dataset, targe
 prediction horizon, live provider, or detailed cloud service map has been selected
 yet. Those decisions require profiling and documented evidence.
 
-The first implementation objective is a reproducible dataset profiler that can
-answer whether candidate sources contain stable, useful fare trajectories. See
+After establishing the development toolchain, the first data objective is to
+evaluate live providers and start a minimal, cost-capped raw collection pilot.
+Current trajectories take time to accumulate and cannot be recovered later.
+Historical dataset profiling will proceed while those observations accrue. See
 [the implementation plan](docs/IMPLEMENTATION_PLAN.md) for the proposed sequence.
 
 ## Product Direction
