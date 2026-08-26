@@ -1,0 +1,33 @@
+# Python environments and generated files
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+/secrets/
+*.key
+*.pem
+
+# Data, experiment, and model artifacts
+/data/
+/artifacts/
+/models/
+/mlruns/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp

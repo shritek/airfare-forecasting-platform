@@ -51,6 +51,17 @@ Start with [AGENTS.md](AGENTS.md), then use the detailed documents under
 
 ## Development
 
-The language, package manager, and validation toolchain will be introduced in a
-separate repository-foundation PR. Until then, this repository contains project
-and design documentation only.
+The project uses Python 3.12 with `uv` for reproducible environments and package
+builds. Install the locked environment and run the validation suite with:
+
+```bash
+uv sync --locked --dev
+uv run ruff format --check .
+uv run ruff check .
+uv run mypy
+uv run pytest
+uv build
+```
+
+See [the development guide](docs/DEVELOPMENT.md) for setup rationale and repository
+boundaries.
