@@ -12,7 +12,7 @@ steps.
 
 | Decision | Evidence required | Current posture |
 | --- | --- | --- |
-| Live provider | terms, total-price semantics, identity fields, cost, limits, and reliability | No provider selected |
+| Live provider | terms, total-price semantics, identity fields, cost, limits, and reliability | Amadeus conditionally selected in ADR-0002; qualification gates remain |
 | Historical source | dates, trajectory density, identity, semantics, quality, license, access cost | Audit both independently |
 | Itinerary identity | collision/stability analysis and manual samples across search dates | Source key is not trusted |
 | Target and horizon | exact-label coverage, censoring, change distribution, baseline utility | One target and horizon first |
@@ -115,8 +115,8 @@ reliable. Online inference requires a separate latency/user requirement and ADR.
 
 ## Immediate Next PR
 
-After the development-foundation PR is reviewed, evaluate candidate live-data
-providers and define the collection contract. That PR should use primary-source
-evidence to compare terms, fare semantics, itinerary identifiers, quotas,
-reliability, and cost; select a provider only if the evidence supports a safe,
-cost-capped pilot.
+After the provider-feasibility PR is reviewed, complete the private Amadeus
+production-access checklist from `docs/LIVE_DATA.md`. If every qualification gate
+passes, implement the minimal collector, immutable raw envelope, request ledger,
+fail-closed budget cap, and synthetic integration tests. If a gate fails, update
+ADR-0002 with the evidence before integrating a fallback provider.

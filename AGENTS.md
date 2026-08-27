@@ -17,6 +17,8 @@ ticket-price estimator.
 - [docs/ML_DESIGN.md](docs/ML_DESIGN.md): target, leakage, evaluation, and model
   methodology
 - [docs/DATA.md](docs/DATA.md): candidate datasets and required audits
+- [docs/LIVE_DATA.md](docs/LIVE_DATA.md): provider evidence, qualification gates,
+  pilot cohort, and raw observation contract
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): local setup and authoritative
   validation commands
 - [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md): evidence gates and

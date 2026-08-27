@@ -1,5 +1,15 @@
 # Data
 
+## Live Source
+
+Amadeus Self-Service Flight Offers Search is the preferred conditional pilot
+provider under [ADR-0002](decisions/0002-amadeus-live-fare-pilot.md). Production
+terms, private-retention/derived-use permission, account quota, budget controls,
+payload fields, and route coverage must pass the gates in
+[LIVE_DATA.md](LIVE_DATA.md) before unattended collection begins. The provider's
+known carrier and fare exclusions mean live observations will not be treated as a
+representative sample of the full US domestic market.
+
 ## Candidate Historical Sources
 
 ### Expedia Flight Prices
