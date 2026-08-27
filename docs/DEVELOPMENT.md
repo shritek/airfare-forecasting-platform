@@ -2,9 +2,11 @@
 
 ## Toolchain
 
-The project uses Python 3.12 and `uv` for Python installation, dependency locking,
-virtual environments, and package builds. Python 3.12 is intentionally
-conservative for the future ML/data dependency stack. The project is an
+The project uses Python 3.14 and `uv` for Python installation, dependency locking,
+virtual environments, and package builds. Python 3.14 was selected after resolving
+and installing a representative data/ML stack (NumPy, pandas, PyArrow, Polars,
+DuckDB, scikit-learn, XGBoost, LightGBM, MLflow, Pydantic, and boto3) under Python
+3.14. The project is an
 installable `src`-layout package so tests and jobs exercise the same import
 boundary that built artifacts expose.
 
@@ -23,6 +25,11 @@ distinct validation or delivery requirement.
 Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/). The
 repository declares its supported `uv` range and Python minor version. `uv` will
 download the required Python interpreter when it is not already available.
+
+The representative stack resolved and installed successfully on Python 3.14.6.
+XGBoost and LightGBM also require an operating-system OpenMP runtime; on macOS,
+installing `libomp` is a separate host prerequisite and is not a Python-version
+compatibility signal.
 
 ## Setup
 

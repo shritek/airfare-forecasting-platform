@@ -51,7 +51,7 @@ Start with [AGENTS.md](AGENTS.md), then use the detailed documents under
 
 ## Development
 
-The project uses Python 3.12 with `uv` for reproducible environments and package
+The project uses Python 3.14 with `uv` for reproducible environments and package
 builds. Install the locked environment and run the validation suite with:
 
 ```bash
