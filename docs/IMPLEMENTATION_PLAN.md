@@ -115,6 +115,8 @@ reliable. Online inference requires a separate latency/user requirement and ADR.
 
 ## Immediate Next PR
 
-After this documentation PR is reviewed, add the reproducible development
-foundation. That PR should make future validation commands authoritative while
-deliberately avoiding data/model abstractions that the audits have not justified.
+After the development-foundation PR is reviewed, evaluate candidate live-data
+providers and define the collection contract. That PR should use primary-source
+evidence to compare terms, fare semantics, itinerary identifiers, quotas,
+reliability, and cost; select a provider only if the evidence supports a safe,
+cost-capped pilot.

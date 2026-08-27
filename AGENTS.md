@@ -17,6 +17,8 @@ ticket-price estimator.
 - [docs/ML_DESIGN.md](docs/ML_DESIGN.md): target, leakage, evaluation, and model
   methodology
 - [docs/DATA.md](docs/DATA.md): candidate datasets and required audits
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): local setup and authoritative
+  validation commands
 - [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md): evidence gates and
   ordered delivery plan
 - [docs/decisions/README.md](docs/decisions/README.md): architecture decision
@@ -63,12 +65,22 @@ scaffolding or placeholder documentation.
 
 ## Validation
 
-The repository does not yet have an implementation toolchain. For documentation-
-only changes, inspect rendered Markdown, verify links, and run:
+Set up the locked environment with:
 
 ```bash
+uv sync --locked --dev
+```
+
+Run the complete validation suite before committing:
+
+```bash
+uv run ruff format --check .
+uv run ruff check .
+uv run mypy
+uv run pytest
+uv build
 git diff --check
 ```
 
-Add authoritative setup, test, lint, type-check, and infrastructure commands here
-when the corresponding tooling is introduced.
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for rationale and repository
+boundaries. Add infrastructure commands here when corresponding tooling exists.
