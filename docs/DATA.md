@@ -2,13 +2,13 @@
 
 ## Live Source
 
-Amadeus Self-Service Flight Offers Search is the preferred conditional pilot
-provider under [ADR-0002](decisions/0002-amadeus-live-fare-pilot.md). Production
-terms, private-retention/derived-use permission, account quota, budget controls,
-payload fields, and route coverage must pass the gates in
-[LIVE_DATA.md](LIVE_DATA.md) before unattended collection begins. The provider's
-known carrier and fare exclusions mean live observations will not be treated as a
-representative sample of the full US domestic market.
+SerpApi Google Flights is the preferred conditional pilot provider under
+[ADR-0002](decisions/0002-serpapi-live-fare-pilot.md). Private retention and
+derived-use confirmation, account quota, budget controls, payload fields, price
+semantics, and route coverage must pass the gates in [LIVE_DATA.md](LIVE_DATA.md)
+before unattended collection begins. Google Flights results are metasearch
+observations rather than authoritative airline offers, so source limitations and
+fare-product ambiguity must remain explicit in downstream data.
 
 ## Candidate Historical Sources
 

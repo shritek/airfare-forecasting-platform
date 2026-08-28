@@ -2,9 +2,9 @@
 
 ## Status
 
-As of 2026-08-27, Amadeus Self-Service Flight Offers Search is the preferred
-provider for a controlled pilot, subject to the hard prerequisites in
-[ADR-0002](decisions/0002-amadeus-live-fare-pilot.md). This is not approval to
+As of 2026-08-27, SerpApi Google Flights is the preferred provider for a
+controlled pilot, subject to the hard prerequisites in
+[ADR-0002](decisions/0002-serpapi-live-fare-pilot.md). This is not approval to
 start unattended collection yet.
 
 The selection is intentionally narrow: it chooses the best provider for learning
@@ -25,18 +25,20 @@ The provider comparison prioritizes:
 8. useful US domestic route and carrier coverage; and
 9. an operational model compatible with scheduled research collection.
 
-No public result is treated as legal advice. Account-specific production terms
-govern over public documentation and must be retained privately with the provider
-access record.
+No public result is treated as legal advice. Applicable account terms and written
+provider confirmations govern over this summary and must be retained privately
+with the provider access record.
 
 ## Provider Comparison
 
 | Provider | Strengths | Blocking or material limitations | Decision |
 | --- | --- | --- | --- |
-| Amadeus Self-Service | Official travel API; self-service test and production environments; pay-as-you-go with a monthly free quota; rich segment, total/base price, fare-basis, booking-class, cabin, baggage, and availability fields | Test data is limited rather than live; production terms and exact quota are account-specific; published Self-Service data excludes American, Delta, British Airways, low-cost carriers, negotiated fares, and special rates | Preferred conditional pilot |
+| SerpApi Google Flights | Immediate automated access; broad Google Flights results; structured flight numbers, airports, timestamps, carrier, class, price, filters, `no_cache`, and Account API quota state; 250 successful searches/month are free | Scraped metasearch rather than an airline/GDS offer API; less explicit fare-basis, tax, and product detail; accuracy is not warranted; customer remains responsible for downstream data use | Preferred conditional pilot |
+| Amadeus Self-Service | Official travel API; self-service test and production environments; pay-as-you-go with a monthly free quota; rich segment, total/base price, fare-basis, booking-class, cabin, baggage, and availability fields | Test data is limited rather than live; production terms and exact quota are account-specific; published Self-Service data excludes American, Delta, British Airways, low-cost carriers, negotiated fares, and special rates | Structured-offer fallback |
 | Duffel Flights | Live bookable offers; strong slices, segments, operating-carrier, cabin, total/base/tax, conditions, and expiry fields | Commercial booking product; fair-use model measures search-to-order ratio; current pricing charges $0.005 per excess search above 1500 searches per order, so a collector that intentionally creates no orders is misaligned | Reject for research collector |
 | Skyscanner Flights Live Prices | Broad real-time metasearch supply and structured itinerary/pricing options | Partner/account-manager access; usage guidelines require user-generated live-price calls and explicitly prohibit automated calls without user action; look-to-book expectations conflict with scheduled collection | Reject for automated collection |
-| SerpApi Google Flights | Immediate API access; broad Google Flights results; flight numbers, airports, timestamps, carrier, class, price, filters, and explicit `no_cache` support; public plans from 250 to 30,000 searches/month | Scraped metasearch rather than an airline/GDS offer API; less explicit fare-basis/product detail; accuracy is not warranted; customer remains responsible for downstream data use; Free, Starter, and Developer plans are excluded from SerpApi's legal shield | Fallback only after data-use confirmation |
+| Airline-direct NDC | Authoritative branded offers, fare rules, taxes, availability, and product identity | Production access generally targets accredited travel sellers and requires carrier-specific onboarding, certification, contracts, and permitted-use review | Revisit if a carrier grants research access |
+| Direct Google Flights scraper | No vendor call charge and broad visible supply | Google machine-readable instructions disallow flight-search result paths; no supported data contract; browser, anti-bot, proxy, parsing, and silent-drift burden | Reject without explicit authorization |
 
 ## Primary Evidence
 
@@ -85,37 +87,61 @@ access record.
   itinerary filters, and its scraped-Google-Flights source.
 - [Pricing](https://serpapi.com/pricing) currently lists 250 free searches/month,
   $25 for 1,000, $75 for 5,000, $150 for 15,000, and $275 for 30,000.
+- The [Account API](https://serpapi.com/account-api) reports the plan limit,
+  successful searches used and remaining, renewal date, and throughput state; its
+  calls do not consume search quota.
 - The [general search API](https://serpapi.com/search-api) documents `no_cache=true`
   to force a fresh fetch instead of accepting its one-hour cache.
 - The [terms](https://serpapi.com/legal) disclaim result accuracy, leave downstream
   legality with the customer, and exclude Free, Starter, and Developer plans from
   the legal shield described for higher recurring plans.
 
+### Airline-direct and Google access
+
+- [American's NDC overview](https://www.exploreamerican.com/globalsales/ndc-overview/)
+  describes direct-connect shopping but requires an ARC/IATA-accredited agency and
+  estimates a multi-month integration.
+- [Alaska's NDC registration](https://www.alaskaair.com/en-au/content/ndc/registration)
+  requires application, test approval, certification, contracts, and separate
+  production enablement.
+- [Google's terms](https://policies.google.com/terms?hl=en-US) restrict automated
+  access that violates machine-readable instructions, while
+  [Google's robots file](https://www.google.com/robots.txt) disallows its travel
+  flight-search result paths.
+
 These pages were reviewed on 2026-08-27. Pricing, product coverage, and legal terms
 are volatile and must be checked again when credentials are provisioned and before
 any paid plan or expanded collection is enabled.
 
-## Amadeus Qualification Gates
+## SerpApi Qualification Gates
 
 The collector must remain disabled until all of the following are recorded in a
 private access checklist and non-secret aggregate status is reflected in project
 documentation:
 
-- production access is approved and the application is in an eligible market;
-- account-specific production terms permit private retention of raw search
-  responses and creation of derived features, labels, metrics, and models;
+- SerpApi support or account-specific terms confirm that the project may privately
+  retain raw Google Flights responses and create derived features, labels,
+  metrics, and models;
 - raw observations and derived artifacts will not be publicly redistributed;
-- the monthly free Flight Offers Search quota and overage price are recorded;
-- a local request-attempt cap fits entirely inside the free quota with at least a
-  10% safety reserve, and no job can silently cross into paid usage;
+- exactly one project account is used; accounts or keys are never rotated to
+  circumvent the free allowance;
+- the Account API confirms a 250-search free monthly limit, the renewal date, and
+  at least 225 searches remaining before the cohort is enrolled;
+- account documentation or a probe confirms that `deep_search=true` still
+  consumes exactly one successful-search credit;
+- no paid plan, extra credits, or automatic paid renewal is enabled;
+- local total-attempt and successful-search caps are both 225, preserving at
+  least 25 successful searches as a safety reserve;
 - a live route probe confirms usable offers on at least four of five candidate
-  routes; and
-- returned payloads contain the identity, fare-product, price, and source fields
-  required by the raw contract below.
+  routes;
+- returned payloads contain the segment identity, travel-class, price, search
+  metadata, and source fields required by the raw contract below; and
+- manual samples establish what the displayed price represents and whether the
+  fixed non-basic-economy filter produces sufficiently comparable observations.
 
-If terms prohibit retention/derived use, the free quota is too small, or route
-coverage fails, do not weaken the gates. Update ADR-0002 and evaluate SerpApi or a
-commercial provider with explicit written permission.
+If terms prohibit retention/derived use, price meaning remains ambiguous, the
+free quota is too small, or route coverage fails, do not weaken the gates. Update
+ADR-0002 and evaluate Amadeus or a provider with explicit written permission.
 
 ## Pilot Search Cohort
 
@@ -138,27 +164,40 @@ cost. Multiple daily observations require a later decision based on pilot value.
 
 The qualification probe uses one departure date for each candidate route. If the
 provider gates pass, collect the 25 accepted route/date cells for eight days. With
-five probe calls this is 205 scheduled attempts before retries. The executable cap
-must be the smaller of 225 attempts or 90% of the recorded free quota. Every HTTP
-attempt—including retryable failures—consumes the local budget. Unknown quota or
-budget state is a hard failure.
+five probe calls this is 205 scheduled searches before retries. The executable
+caps are 225 total Google Flights attempts and 225 provider-reported successful
+searches per monthly cycle. SerpApi documents that only successful searches count
+toward quota, but every attempt consumes the stricter local attempt budget.
+Unknown quota, renewal-cycle, or local-budget state is a hard failure.
 
 ## Query Contract
 
 Each request fixes:
 
-- production environment;
+- `engine=google_flights`;
 - exact origin and destination airport codes;
 - exact departure date;
 - one adult;
-- one-way itinerary;
-- economy travel class;
-- USD currency; and
-- a bounded maximum result count recorded in configuration.
+- one-way itinerary (`type=2`);
+- economy travel class (`travel_class=1`);
+- US market and English locale (`gl=us`, `hl=en`);
+- USD currency;
+- `exclude_basic=true` to reduce fare-product mixing for US domestic economy;
+- `show_hidden=true` so the returned universe is not limited to initially visible
+  options;
+- `deep_search=true` so results follow SerpApi's browser-similarity mode; and
+- `no_cache=true` so each successful call is a new provider fetch.
 
 Search configuration is versioned. Changing passenger count, cabin, currency,
-route, departure date, non-stop filter, or result cap creates a new search-cell
-version rather than mutating historical meaning.
+market, locale, route, departure date, basic-fare filter, hidden-result behavior,
+or deep-search behavior creates a new search-cell version rather than mutating
+historical meaning.
+
+The observed price is initially defined as SerpApi's displayed itinerary price
+under this exact query, not an airline-filed fare, verified booking price, base
+fare, or tax breakdown. `price_insights` and `price_history` are retained as
+untrusted source metadata and cannot create labels or trajectory features until a
+separate semantics and point-in-time audit approves them.
 
 ## Immutable Raw Observation Envelope
 
@@ -170,8 +209,11 @@ Each attempt writes one immutable envelope containing:
 - sanitized request parameters with no token, key, or secret;
 - HTTP status, provider request/correlation ID when available, latency, and error
   classification;
+- sanitized SerpApi search metadata, including search ID, provider creation and
+  processing timestamps, status, and result buckets;
 - response content type, byte count, SHA-256 digest, and unmodified raw payload;
-- local budget counters before and after the attempt; and
+- local attempt counters plus sanitized Account API quota snapshots before and
+  after the run; and
 - collector Git commit and configuration digest.
 
 Persist unsuccessful attempts as metadata even when no response body exists.
@@ -181,10 +223,14 @@ only aggregate, non-sensitive pilot reports may be committed.
 ## Retry, Idempotency, and Safety
 
 - Run one collector instance for the pilot; concurrency is one.
+- Query the Account API before every run and fail closed if it is unavailable,
+  reports an unexpected account/plan/renewal cycle, or leaves insufficient quota.
 - Do not retry authentication, validation, or other deterministic 4xx errors.
 - Retry 429 and transient 5xx/network failures at most twice with exponential
   backoff and jitter, respecting `Retry-After`.
 - Count every attempt before sending it so a crash cannot bypass the budget cap.
+- Reconcile successful-search usage with the Account API after every run; a
+  mismatch stops subsequent runs for investigation.
 - Use `(provider, environment, cohort_id, search_cell_id, scheduled_at_utc,
   attempt_number)` as the immutable attempt identity.
 - Never log access tokens, client secrets, authorization headers, or full
@@ -201,8 +247,10 @@ Proceed beyond the eight-day pilot only if:
   observation dates and at least 20 appear on seven or more dates;
 - at least 95% of scheduled cells produce a persisted success or classified
   failure envelope;
-- segment, fare-product, and total-price fields are parseable without silent
-  coercion;
+- segment identity, travel-class, result-bucket, and displayed-price fields are
+  parseable without silent coercion;
+- repeated manual samples show that the fixed query produces a sufficiently
+  comparable non-basic-economy price or quantify why it does not;
 - duplicate and changing-offer behavior can be explained from retained raw data;
 - no credential, terms, quota, or paid-usage control fails; and
 - actual provider coverage limitations are documented in the aggregate report.
