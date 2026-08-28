@@ -22,10 +22,18 @@ license/redistribution terms must be verified from primary source material.
 
 ### `egupta/atl-dom-flight-data-sql-db`
 
-The Hugging Face dataset is reported as a 9+ GB SQLite-backed collection centered
-on ATL domestic routes. Its 2025 upload date is not evidence of observation dates.
-The database must be queried for actual `today` coverage, routes, scrape density,
-price semantics, duplicates, and licensing before it is selected.
+The Hugging Face dataset is a 9.37 GB SQLite collection centered on ATL domestic
+routes. Its May 2025 upload date is not evidence of observation dates. The source
+page exposes a single `dataDB_domestic.db` file and describes one-way economy
+Google Flights observations for one adult. Its collection repository uses a
+reverse-engineered Google Flights request format, so an MIT repository/dataset
+tag does not by itself resolve rights to retain or use the scraped observations.
+
+The reported schema has route, airline display name, price, observation date,
+lead time, flight times, duration, stops, and departure date, but no flight number
+or complete segment identifiers. A composite itinerary key is therefore only a
+hypothesis until collision and stability evidence supports it. See
+[the source audit and profiler runbook](data_sources/HF_ATL_DOMESTIC.md).
 
 The sources will not be concatenated by default. Reasonable experiments include
 historical training with newer temporal/OOD validation, source-specific models,

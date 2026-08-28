@@ -69,3 +69,17 @@ validation set.
 
 The initial package contains no airfare domain abstractions. Those will follow
 only after provider and source-schema evidence supports their contracts.
+
+## Historical Source Profiling
+
+The Hugging Face ATL database profiler has no third-party runtime dependencies and
+opens the source database read-only. Keep the 9.37 GB database and generated
+reports outside the repository:
+
+```bash
+uv run airfare-profile-hf-atl /path/to/dataDB_domestic.db \
+  --output /path/to/hf-atl-profile.json
+```
+
+See [the source-specific runbook](data_sources/HF_ATL_DOMESTIC.md) for acquisition,
+license, identity, and interpretation constraints.

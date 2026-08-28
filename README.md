@@ -19,11 +19,12 @@ Google Flights is the conditional live-pilot provider, pending retention and
 derived-use confirmation plus quota, budget, payload, price-semantics, and route-
 coverage gates. Other decisions still require profiling and documented evidence.
 
-After establishing the development toolchain, the first data objective is to
-evaluate live providers and start a minimal, cost-capped raw collection pilot.
-Current trajectories take time to accumulate and cannot be recovered later.
-Historical dataset profiling will proceed while those observations accrue. See
-[the implementation plan](docs/IMPLEMENTATION_PLAN.md) for the proposed sequence.
+Historical investigation can proceed independently of the live-pilot gates. The
+first source-specific tool profiles the Hugging Face ATL SQLite dataset read-only,
+measuring date coverage, trajectory density, candidate itinerary collisions,
+quality failures, and price changes before the source is allowed into modeling.
+See [the source audit](docs/data_sources/HF_ATL_DOMESTIC.md) and
+[implementation plan](docs/IMPLEMENTATION_PLAN.md).
 
 ## Product Direction
 
