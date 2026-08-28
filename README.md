@@ -14,8 +14,10 @@ infrastructure.
 ## Status
 
 The project is in its definition and data-investigation phase. No dataset, target,
-prediction horizon, live provider, or detailed cloud service map has been selected
-yet. Those decisions require profiling and documented evidence.
+prediction horizon, or detailed cloud service map has been selected yet. SerpApi
+Google Flights is the conditional live-pilot provider, pending retention and
+derived-use confirmation plus quota, budget, payload, price-semantics, and route-
+coverage gates. Other decisions still require profiling and documented evidence.
 
 After establishing the development toolchain, the first data objective is to
 evaluate live providers and start a minimal, cost-capped raw collection pilot.

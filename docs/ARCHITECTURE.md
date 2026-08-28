@@ -7,6 +7,12 @@ The first vertical slice should run locally on representative data with the same
 contracts intended for scheduled cloud jobs. [ADR-0001](decisions/0001-batch-first-inference.md)
 sets batch inference as the default.
 
+[ADR-0002](decisions/0002-serpapi-live-fare-pilot.md) conditionally selects
+SerpApi Google Flights for a bounded qualification pilot. The collector remains
+disabled until the retention, derived-use, quota, budget, payload, price-semantics,
+and route gates in
+[LIVE_DATA.md](LIVE_DATA.md) pass.
+
 ```text
 historical source ─┐
                    ├─> immutable raw observations
@@ -64,7 +70,7 @@ console changes.
 
 - DuckDB versus Polars (or both by boundary); Spark only after a measured need
 - exact Parquet layout, compaction, catalog, and snapshot/version mechanism
-- live fare provider and collector execution environment
+- SerpApi qualification and collector execution environment
 - scheduler/orchestrator and retry semantics
 - MLflow tracking and registry hosting model
 - retraining trigger implementation and promotion authority

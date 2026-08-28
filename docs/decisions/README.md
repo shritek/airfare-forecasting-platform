@@ -8,6 +8,7 @@ they do not exist only in conversations or pull requests.
 | ADR | Status | Summary |
 | --- | --- | --- |
 | [0001](0001-batch-first-inference.md) | Accepted | Use batch-first inference unless an online requirement emerges |
+| [0002](0002-serpapi-live-fare-pilot.md) | Proposed | Use SerpApi for a gated live-fare qualification pilot |
 
 ## Process
 

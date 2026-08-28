@@ -1,5 +1,15 @@
 # Data
 
+## Live Source
+
+SerpApi Google Flights is the preferred conditional pilot provider under
+[ADR-0002](decisions/0002-serpapi-live-fare-pilot.md). Private retention and
+derived-use confirmation, account quota, budget controls, payload fields, price
+semantics, and route coverage must pass the gates in [LIVE_DATA.md](LIVE_DATA.md)
+before unattended collection begins. Google Flights results are metasearch
+observations rather than authoritative airline offers, so source limitations and
+fare-product ambiguity must remain explicit in downstream data.
+
 ## Candidate Historical Sources
 
 ### Expedia Flight Prices
