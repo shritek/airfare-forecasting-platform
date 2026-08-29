@@ -115,9 +115,14 @@ reliable. Online inference requires a separate latency/user requirement and ADR.
 
 ## Immediate Next PR
 
-After the provider-feasibility PR is reviewed, complete the SerpApi access and
-data-use checklist from `docs/LIVE_DATA.md` and manually inspect a small number of
-live responses. If every qualification gate passes, implement the minimal
-collector, immutable raw envelope, request ledger, fail-closed free-tier cap, and
-synthetic integration tests. If a gate fails, update ADR-0002 with the evidence
-before integrating Amadeus or another fallback provider.
+Run the Hugging Face ATL profiler against the full local database and publish only
+permitted aggregate audit evidence. Use those results to decide whether the source
+supports itinerary trajectories and future labels; do not begin model fitting
+until that gate passes.
+
+In parallel, complete the SerpApi access and data-use checklist from
+`docs/LIVE_DATA.md` and manually inspect a small number of live responses. If every
+qualification gate passes, implement the minimal collector, immutable raw
+envelope, request ledger, fail-closed free-tier cap, and synthetic integration
+tests. If a gate fails, update ADR-0002 with the evidence before integrating a
+fallback provider.
