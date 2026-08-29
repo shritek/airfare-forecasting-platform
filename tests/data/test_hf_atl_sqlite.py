@@ -41,6 +41,7 @@ def _row(
     name: str = "Example Air",
     departure_date: str = "2026-09-01",
     flight_depart: str = "08:00",
+    stops_info: str = "Nonstop",
 ) -> tuple[object, ...]:
     days_ahead = 32 - int(today[-2:]) if today.startswith("2026-08-") else 0
     return (
@@ -56,7 +57,7 @@ def _row(
         flight_depart,
         "10:30",
         0,
-        "Nonstop",
+        stops_info,
         departure_date,
     )
 
@@ -179,6 +180,7 @@ def test_profile_reports_temporal_identity_and_quality_evidence(tmp_path: Path) 
     assert quality["invalid_price_count"] == 1
     assert quality["nonpositive_price_count"] == 0
     assert quality["lead_time_mismatch_count"] == 0
+    assert quality["lead_time_offset_counts"] == {"0": 19}
 
     identity = report["identity"]
     assert isinstance(identity, dict)
@@ -235,6 +237,26 @@ def test_profile_handles_an_empty_source_table(tmp_path: Path) -> None:
     transitions = report["price_transitions"]
     assert isinstance(transitions, dict)
     assert transitions["comparable_transition_count"] == 0
+
+
+def test_blank_stops_info_is_valid_for_a_nonstop_itinerary(tmp_path: Path) -> None:
+    database = tmp_path / "nonstop.db"
+    connection = sqlite3.connect(database)
+    try:
+        connection.execute(SCHEMA)
+        connection.execute(
+            "INSERT INTO data_table VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            _row(1, today="2026-08-01", price="$100", stops_info=""),
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+    identity = profile_database(database)["identity"]
+
+    assert isinstance(identity, dict)
+    assert identity["rows_with_incomplete_candidate_key"] == 0
+    assert identity["unique_candidate_itineraries"] == 1
 
 
 def test_cli_writes_deterministic_json(tmp_path: Path) -> None:

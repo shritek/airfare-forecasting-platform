@@ -31,7 +31,9 @@ flight_depart + flight_arrive + flight_duration + stops + stops_info
 
 Same-day duplicate and conflicting-price groups expose obvious collisions, but a
 low collision count cannot prove identity stability. Manual samples and comparison
-with richer sources remain necessary before label generation.
+with richer sources remain necessary before label generation. A blank
+`stops_info` is a valid source representation when `stops` is zero, so it is not
+classified as an incomplete candidate identity.
 
 ## License and Use Gate
 
@@ -58,7 +60,8 @@ The command opens SQLite in read-only mode and produces deterministic JSON with:
 - discovered tables, columns, and exact row count;
 - valid observation/departure date bounds and invalid-date counts;
 - route counts, scrape-day coverage, and date bounds;
-- nulls, invalid/nonpositive prices, exact duplicates, and lead-time mismatches;
+- nulls, invalid/nonpositive prices, exact duplicates, and stored-versus-derived
+  lead-time offsets;
 - candidate-key completeness, trajectory counts spanning 2, 3, 7, and 14 days;
 - same-day duplicate and conflicting-price groups; and
 - adjacent comparable price-transition counts and unchanged-fare rate.

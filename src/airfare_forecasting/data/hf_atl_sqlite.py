@@ -82,10 +82,30 @@ def _valid_date(column: str) -> str:
 
 
 def _complete_identity() -> str:
-    return " AND ".join(
+    required_values = " AND ".join(
         f"{_quote(column)} IS NOT NULL AND trim(CAST({_quote(column)} AS TEXT)) <> ''"
         for column in CANDIDATE_IDENTITY_COLUMNS
+        if column != "stops_info"
     )
+    # The source represents nonstop itineraries with stops=0 and blank stops_info.
+    stops_info = _quote("stops_info")
+    stops = _quote("stops")
+    return (
+        f"{required_values} AND {stops_info} IS NOT NULL AND "
+        f"(trim(CAST({stops_info} AS TEXT)) <> '' OR "
+        f"trim(CAST({stops} AS TEXT)) = '0')"
+    )
+
+
+def _lead_time_offsets(connection: sqlite3.Connection) -> dict[str, int]:
+    rows = connection.execute(
+        "SELECT CAST(julianday(departure_date) - julianday(today) AS INTEGER) "
+        "- days_ahead AS offset_days, COUNT(*) "
+        f"FROM {_quote(TABLE_NAME)} WHERE {_valid_date('today')} "
+        f"AND {_valid_date('departure_date')} AND days_ahead IS NOT NULL "
+        "GROUP BY offset_days ORDER BY offset_days"
+    )
+    return {str(int(row[0])): int(row[1]) for row in rows}
 
 
 def _database_inventory(
@@ -169,6 +189,7 @@ def _quality_profile(
         f"SELECT {null_expressions} FROM {_quote(TABLE_NAME)}"
     ).fetchone()
     assert null_row is not None
+    lead_time_offset_counts = _lead_time_offsets(connection)
 
     return {
         "exact_duplicate_rows_excluding_id": duplicate_rows,
@@ -182,13 +203,10 @@ def _quality_profile(
             f"SELECT COUNT(*) FROM {_quote(TABLE_NAME)} "
             "WHERE parse_price_cents(price) <= 0",
         ),
-        "lead_time_mismatch_count": _scalar(
-            connection,
-            f"SELECT COUNT(*) FROM {_quote(TABLE_NAME)} WHERE "
-            f"{_valid_date('today')} AND {_valid_date('departure_date')} AND "
-            "CAST(julianday(departure_date) - julianday(today) AS INTEGER) "
-            "<> days_ahead",
+        "lead_time_mismatch_count": sum(
+            count for offset, count in lead_time_offset_counts.items() if offset != "0"
         ),
+        "lead_time_offset_counts": lead_time_offset_counts,
         "null_counts": {
             column: int(null_row[index] or 0)
             for index, column in enumerate(REQUIRED_COLUMNS)
