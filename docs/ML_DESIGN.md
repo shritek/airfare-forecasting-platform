@@ -27,6 +27,22 @@ must distinguish at least:
 Those cases must not be collapsed into an assumed price movement. The exact
 censoring policy is an evidence-gated decision.
 
+### Historical Label Feasibility
+
+The Hugging Face source is evaluated at exact 1-, 3-, 7-, and 14-calendar-day
+offsets before choosing one initial target. Identical same-itinerary/day prices
+are collapsed, while invalid/nonpositive prices and groups with conflicting
+prices are excluded. A current observation is eligible only when the target date
+is before departure and the same route has evidence of collection on that date.
+
+An eligible itinerary with no future match is reported as unmatched. It is not
+treated as sold out, disappeared, unchanged, or changed because the source cannot
+distinguish those states reliably. Route/date presence is only a collection proxy:
+partial scraper failures remain a risk. These measurements use the proposed
+`hf_atl_composite_v0` identity and remain exploratory until identity stability is
+accepted in an ADR. Coverage and outcome balance are reported by route as well as
+overall so a high-volume route cannot hide an unusable cohort.
+
 ## Leakage and Splitting
 
 Features must be reproducible from data whose event time is no later than the

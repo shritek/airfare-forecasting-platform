@@ -83,3 +83,13 @@ uv run airfare-profile-hf-atl /path/to/dataDB_domestic.db \
 
 See [the source-specific runbook](data_sources/HF_ATL_DOMESTIC.md) for acquisition,
 license, identity, and interpretation constraints.
+
+After source profiling, measure exact-horizon future-price label coverage with:
+
+```bash
+uv run airfare-profile-hf-labels /path/to/dataDB_domestic.db \
+  --output /path/to/hf-atl-label-feasibility.json
+```
+
+Use repeated `--horizon N` options to override the default 1-, 3-, 7-, and 14-day
+horizons. The output is an exploratory source audit, not a training dataset.
