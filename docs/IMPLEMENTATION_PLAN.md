@@ -115,10 +115,11 @@ reliable. Online inference requires a separate latency/user requirement and ADR.
 
 ## Immediate Next PR
 
-Run the Hugging Face ATL profiler against the full local database and publish only
-permitted aggregate audit evidence. Use those results to decide whether the source
-supports itinerary trajectories and future labels; do not begin model fitting
-until that gate passes.
+After the Hugging Face source and label-feasibility profilers are reviewed, inspect
+representative candidate-identity matches and conflicts manually, resolve the
+dataset derived-use gate, and publish only permitted aggregate evidence. If
+identity stability holds, propose the bootstrap source and exactly one initial
+target/horizon in ADRs before building training snapshots or fitting models.
 
 In parallel, complete the SerpApi access and data-use checklist from
 `docs/LIVE_DATA.md` and manually inspect a small number of live responses. If every

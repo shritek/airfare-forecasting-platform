@@ -22,8 +22,10 @@ coverage gates. Other decisions still require profiling and documented evidence.
 Historical investigation can proceed independently of the live-pilot gates. The
 first source-specific tool profiles the Hugging Face ATL SQLite dataset read-only,
 measuring date coverage, trajectory density, candidate itinerary collisions,
-quality failures, and price changes before the source is allowed into modeling.
-See [the source audit](docs/data_sources/HF_ATL_DOMESTIC.md) and
+quality failures, and price changes before the source is allowed into modeling. A
+second exploratory tool measures exact 1-, 3-, 7-, and 14-day label coverage with
+explicit deduplication and censoring; it does not select a target or create a
+training dataset. See [the source audit](docs/data_sources/HF_ATL_DOMESTIC.md) and
 [implementation plan](docs/IMPLEMENTATION_PLAN.md).
 
 ## Product Direction
